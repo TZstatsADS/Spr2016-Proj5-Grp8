@@ -59,7 +59,10 @@ def indeed(query, state_abbr, phantomjs_driver):
     soup = BeautifulSoup(rawhtml, "lxml")
     date_retrieved = strftime("%c")
     
-    num_pages = int(soup.find_all("span", "pn")[-2].get_text())
+    try:
+        num_pages = int(soup.find_all("span", "pn")[-2].get_text())
+    except IndexError:
+        num_pages = 1
     job_numbers = re.findall('\d+', soup.find(id = "searchCount").get_text())
     if len(job_numbers) > 3: # Total number of jobs > 1000
         num_listings_in_state = (int(job_numbers[2])*1000) + int(job_numbers[3])
@@ -177,8 +180,8 @@ def indeed(query, state_abbr, phantomjs_driver):
                            "num_listings_in_state"]
     return(master_list)
 
-filename = "C:/Users/Arnold/Dropbox/Columbia/2016 Spring/STAT W4249 Applied Data Science/finalproject-p5-team8/data/georgia.csv"
-georgia.to_csv(filename)
+filename = "C:/Users/Arnold/Dropbox/Columbia/2016 Spring/STAT W4249 Applied Data Science/finalproject-p5-team8/data/dc.csv"
+dc.to_csv(filename)
     
         
         
