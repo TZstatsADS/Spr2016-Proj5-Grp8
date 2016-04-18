@@ -65,6 +65,7 @@ def indeed(query, state_abbr, phantomjs_driver):
         num_listings_in_state = (int(job_numbers[2])*1000) + int(job_numbers[3])
     else:
         num_listings_in_state = int(job_numbers[2])
+    print(num_listings_in_state)
     
     # Note: this number includes duplicate listings removed from the search results
     
@@ -77,22 +78,31 @@ def indeed(query, state_abbr, phantomjs_driver):
     post_url = []
     post_text = []     
     
-    jobscraper = webdriver.PhantomJS(executable_path = phantomjs_driver)     
+    jobscraper = webdriver.PhantomJS(executable_path = phantomjs_driver, 
+                                     service_args=['--ignore-ssl-errors=true', 
+                                     '--ssl-protocol=any']) 
+    jobscraper.set_script_timeout(30)
+    jobscraper.set_page_load_timeout(30)
+    
+    count = 0
     
     for page in range(num_pages):
         print("Scraping page " + str(page + 1))
         
         page_url = main_url + "&start=" + str(page * 100)
-        
-        try:
-            response = requests.get(page_url, timeout = 5)
-        except:
-            return("Could not retrieve HTML - page " + str(page + 1))
+        for attempt in range(10):
+            try:
+                response2 = requests.get(page_url, timeout = 5)
+            except:
+                continue
+            break
+        else:
+            return("Failed 10 attempts to retrieve HTML")
             
-        rawhtml = response.content
-        soup = BeautifulSoup(rawhtml, "lxml")    
+        rawhtml2 = response2.content
+        soup2 = BeautifulSoup(rawhtml2, "lxml")    
     
-        job_sections = soup.find_all("div", class_ = re.compile("row"))
+        job_sections = soup2.find_all("div", class_ = re.compile("row"))
         if len(job_sections) == 0:
             return("No results found.")
         
@@ -131,15 +141,21 @@ def indeed(query, state_abbr, phantomjs_driver):
         post_texts = []
         
         for url in post_urls:
-            jobscraper.get(url)
-            print(jobscraper.current_url)
+            count += 1               
+            print(count)
+            print(url)
+            try:
+                jobscraper.get(url)
+            except:
+                post_texts.append("")
+                continue
+
+            soup3 = BeautifulSoup(jobscraper.page_source, "lxml")
             
-            soup2 = BeautifulSoup(jobscraper.page_source, "lxml")
-            
-            for script in soup2(["script", "style"]):
+            for script in soup3(["script", "style"]):
                 script.extract()
             
-            text = str(soup2.get_text(" ", strip = True))
+            text = str(soup3.get_text(" ", strip = True))
             text = text.replace(u'\xa0', u' ')
             post_texts.append(text)
             
@@ -160,9 +176,9 @@ def indeed(query, state_abbr, phantomjs_driver):
                            "summary", "post_url", "post_text", "date_retrieved",
                            "num_listings_in_state"]
     return(master_list)
-        
 
- 
+filename = "C:/Users/Arnold/Dropbox/Columbia/2016 Spring/STAT W4249 Applied Data Science/finalproject-p5-team8/data/georgia.csv"
+georgia.to_csv(filename)
     
         
         
