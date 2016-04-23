@@ -1,0 +1,5 @@
+dimension, optimization, sampling, PHP, Stata, dashboard, SPSS, shell, Linux, regression, d3.js, forecast, algorithm, nonparametric,
+SQL, R, Python, NoSQL, PostGreSQL, Stan, Ruby, Scala, Java, Perl, Shiny, C++, HTML5, Tableau, Markdown, Hadoop, MapReduce, SAS, Matlab,
+Excel, PPT, Spark, Julia, AWS, MongoDB, Javascript, HBase, Pig, Hive, Zookeeper, deep learning, classify, bayes, GIS, machine learning, survival,
+multilevel, data mining, linear, visualization, predict, analytic, design, NLP, recommend, supervised, unsupervised, cluster, model, hierarchical,
+ETL, vision
