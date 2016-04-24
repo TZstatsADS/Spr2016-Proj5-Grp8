@@ -2,8 +2,7 @@
 # install.packages("streamR")
 # devtools::install_github("jrowen/twitteR", ref = "oauth_httr_1_0")
 # install.packages("Rstem")
-# install.packages("wordclouds")
-# install.packages("sentiment")
+
 
 library(streamR)
 library(twitteR)
@@ -13,11 +12,12 @@ library(RJSONIO)
 library(stringr)
 library(httr)  # function GET
 
-
+setwd("/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5")
 ### LOAD CREDENTIALS
 ###____________________________________________________________________________________________
 load("/Users/JPC/Documents/R/twitter API/twitCred.RData")
 load("/Users/JPC/Documents/R/twitter API/token.RData")
+load("/Users/JPC/Documents/R/twitter API/twitCredentials.RData")
 
 ### UNDERSTANDING SEARCH API
 ###____________________________________________________________________________________________
@@ -106,12 +106,12 @@ test.df
 test.df.noretweet <- twListToDF(strip_retweets(tweets4))
 head(test.df.noretweet$text,10)
 nrow(test.df.noretweet)
-# save(tweets4,test.df,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic1.RData")
+# save(tweets4,test.df,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/historic1.RData")
 names(test.df)
 test.df[1,]$favorited
 day.hour.created <- test.df$created[1]
 day.created <- substr(x,start = 1,stop = 10)
-substract.date <- function(x){substr(x,start = 1,stop = 10)}
+
 substract.day <- function(x){substr(x,start = 9,stop = 10)}
 substract.month <- function(x){substr(x,start = 6,stop = 7)}
 substract.year <- function(x){substr(x,start = 1,stop = 4)}
@@ -126,7 +126,20 @@ hour.v <- sapply(test.df$created,substract.hour)
 minutes.v <- sapply(test.df$created,substract.minutes)
 seconds.v <- sapply(test.df$created,substract.seconds)
 
-substract.seconds(day.hour.created)
+first.last <- function(period){
+  switch(period,
+         date=c(1,10),
+         day=c(9,10),
+         month=c(6,7),
+         year=c(1,4),
+         time=c(12,9),
+         hour=c(12,13),
+         minutes=c(15,16),
+         seconds=c(18,19)
+  )
+}
+substract.period <- function(x,period){sapply(x,function(x) substr(x,start = first.last(period)[1],stop = first.last(period)[2]))}
+
 
 
 table(year.v)
@@ -159,22 +172,82 @@ getCurRateLimitInfo()
 
 ### RETRIEVING HISTORY
 ###____________________________________________________________________________________________
-max.id <- test.df$id[nrow(test.df)-3]
-tweets.h2 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=5,maxID =max.id )
+max.id <- test.df$id[nrow(test.df)]
+tweets.h2 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17800,maxID =max.id )
 test.df.h2 <- twListToDF(tweets.h2)
+# we reached the end
+# save(tweets.h2,test.df.h2,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/historic2.RData")
+
+min.id <- test.df$id[1]
+tweets.f1 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17800,sinceID = min.id)
+test.df.f1 <- twListToDF(tweets.f1)
+# save(tweets.f1,test.df.f1,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
+tail(test.df.h3)
+test.df.h3$id[1]
+
+load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
+
+min.id <- test.df.f1$id[1]
+tweets.f1 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17800,sinceID = min.id)
+test.df.f1 <- twListToDF(tweets.f1)
+
+ppp <- substract.period(x = test.df.f1$created,"day")
+table(ppp)
+getCurRateLimitInfo()
 
 
 getCurRateLimitInfo()
 
+
 ### STREAM
 ###____________________________________________________________________________________________
 
+# tw.df <- data.frame()
 
-filterStream(file.name = "tweets.json", # Save tweets in a json file
-             track = c('data science','datascience','Data Science'), 
-             language = "en",
-             # location = c(-119, 33, -117, 35), # latitude/longitude pairs providing southwest and northeast corners of the bounding box.
-             # timeout = 60, # Keep connection alive for 60 seconds
-             oauth = twitCred) # Use my_oauth file as the OAuth credentials
+total.min <- 60
+alive.min <- 10
+Sys.time()
+end.date <- Sys.time()+60*total.min
+end.date
 
-tweets.df2 <- parseTweets("tweets.json", simplify = FALSE)
+
+## continue running until current date is end.date
+while (Sys.time() < end.date){
+  ## preparing file name so that it mentions time
+  current.time <- format(Sys.time(), "%Y_%m_%d_%H_%M")
+  json.file <- paste("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/stream_tweets/datascience_tweets_", current.time, ".json", sep="")
+  ## capture tweets about Scotland or #Indyref (Independence Referendum)
+  
+  filterStream(file.name = json.file, # 
+               track = c('data science','#datascience','Data Science'), 
+               language = "en",
+               # location = c(-119, 33, -117, 35), # latitude/longitude pairs providing southwest and northeast corners of the bounding box.
+               timeout = 60*alive.min, # Keep connection alive for 60 seconds
+               oauth = twitCred) 
+  # filterStream(file=json.file, track="scotland", oauth=my_oauth, timeout=5)
+  if (file.info(json.file)$size > 0) {
+    df <- parseTweets(json.file,simplify=FALSE)
+    #Remove unknown locations
+    # df <- df[complete.cases(df), ]
+    #Bind all files
+    tw.df <- as.data.frame(rbind(tw.df, df))
+  } else {
+    print ("no tweets found")
+  }
+  #   if (length(df$place_lon) >= 1) {
+  #     #get icon
+  #     shape = "http://maps.google.com/mapfiles/kml/pal2/icon18.png"
+  #     #bloody timestap
+  #     tw.df$time <- substr(tw.df$created_at, 12, 19)
+  #     tw.df$time <- as.POSIXct(strptime(tw.df$time, "%H:%M:%S"))
+  #     #Plot
+  #     sp <- SpatialPoints(tw.df[,c("place_lon","place_lat")])
+  #     proj4string(sp) <- CRS("+proj=longlat +datum=WGS84")
+  #     df_st <- STIDF(sp, time = tw.df$time, data = tw.df[,c("name","retweet_count")])
+  #     #Plot KML - opens Google Earth on loop[1] then updates for following
+  #     plotKML(df_st, dtime = 24*3600, points_names=df$name, LabelScale = .4)
+  #   } else {
+  #     Sys.sleep(1)
+  #     print("No geo-located tweets found, restart stream")
+  #   }
+}
