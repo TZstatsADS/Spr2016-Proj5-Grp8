@@ -3,6 +3,7 @@
 shinyUI(fluidPage(
   titlePanel("Term Correlations in Indeed.com Job Postings"),
   
+  fluidRow(
   sidebarLayout(
     position = "left",
     sidebarPanel(
@@ -39,10 +40,12 @@ shinyUI(fluidPage(
       radioButtons("category1",
                    label = "Finally, choose a category to compare your chosen term to:",
                    choices = list("technologies", "techniques", "industries"),
-                   selected = "techniques")
+                   selected = "techniques"),
+      actionButton("refresh", label = "Plot!")
     ),
     mainPanel(
       plotOutput("assocplot")
     )
-  )
+  )),
+  fluidRow() # Put your new plot inside those parentheses
 ))

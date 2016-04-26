@@ -37,6 +37,9 @@ term_assoc <- function(term1, term2, dtm) {
 }
 
 term_assoc_plot <- function(vec1, term2, dtm) {
+  if ("python" %in% vec1) {category_name <- "technologies"}
+  else if ("optimization" %in% vec1) {category_name <- "techniques"}
+  else if ("startup" %in% vec1) {category_name <- "industries"}
   points <- sort(sapply(vec1, FUN = term_assoc, term2 = term2, dtm = dtm), decreasing = TRUE)
   point_names <- gsub(paste("[.]", term2, sep = ""), "", names(points))
   points <- data.frame(points)
@@ -45,9 +48,9 @@ term_assoc_plot <- function(vec1, term2, dtm) {
   points_plot <- ggplot(points, aes(x = index, y = points)) + 
     geom_point(size = 3) + 
     geom_label_repel(aes(label = labels)) +
-    xlab(capitalize(deparse(substitute(vec1)))) +
+    xlab(capitalize(category_name)) +
     ylab("Correlation") +
-    ggtitle(paste("How often various", deparse(substitute(vec1)), 
+    ggtitle(paste("How often various", category_name, 
                   "are in the same job posting as", term2)) +
     theme_classic() +
     theme(panel.background = element_rect(fill = "#cdcfff"))
@@ -55,14 +58,22 @@ term_assoc_plot <- function(vec1, term2, dtm) {
 }
 
 shinyServer(function(input, output) {
+  term2 <- eventReactive(eventExpr = input$refresh,
+               valueExpr = {
+      switch(input$category2,
+             "technologies" = input$term2technologies,
+             "techniques" = input$term2techniques,
+             "industries" = input$term2industries)},
+      ignoreNULL = TRUE)
+  vec1 <- eventReactive(eventExpr = input$refresh,
+               valueExpr = {
+      switch(input$category1,
+             "technologies" = technologies,
+             "techniques" = techniques,
+             "industries" = industries)},
+      ignoreNULL = TRUE)
   output$assocplot <- renderPlot({
-    term2 <- switch(input$category2,
-                    "technologies" = input$term2technologies,
-                    "techniques" = input$term2techniques,
-                    "industries" = input$term2industries)
-    # if statements are messy but it avoids a bug caused by using switch() for category1
-    if (input$category1 == "technologies") term_assoc_plot(technologies, term2, dtm)
-    else if (input$category1 == "techniques") term_assoc_plot(techniques, term2, dtm)
-    else if (input$category1 == "industries") term_assoc_plot(industries, term2, dtm)
+    term_assoc_plot(vec1(), term2(), dtm)
+  # define your new plot here
   })
 })
