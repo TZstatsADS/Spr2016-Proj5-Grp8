@@ -4,6 +4,7 @@ library(tm)
 library(ggplot2)
 library(ggrepel)
 library(R.utils)
+library('scales')
 
 dtm <- readRDS("./jp_dtm_sparse.RDS") # document-term matrix
 
@@ -57,6 +58,21 @@ term_assoc_plot <- function(vec1, term2, dtm) {
   return(points_plot)
 }
 
+########################
+#Static Plots
+keymatrix <- read.csv("keymatrix.csv")
+skill_n <- c("d3js","r","c","stan","java","stata","linux","sql","python","nosql","postgresql","ruby","scala","perl","shiny","php","html5","tableau","markdown","hadoop","mapreduce","sas","matlab","excel","ppt","spark","julia","aws","mongodb","javascript","hbase","pig","hive","zookeeper","spss","shell")
+skill_f <- colMeans(keymatrix[, skill_n])
+skill <- data.frame(name = skill_n,freq = skill_f)
+skill20 <- skill[order(-skill$freq), ][1:20,]
+skill20 <- transform(skill20, name = reorder(name, freq))
+
+knowledge_n <- c("dashboard","regression","dimension","forecast","algorithm","nonparametric","unsupervised","cluster","model","hierarchical","machine.learning","survival","multilevel","data.mining","linear","visualization","predict","analytic","design","sampling","optimization","deep.learning","classify","bayes","recommend","supervised","vision","gis","nlp","etl")
+knowledge_f <- colMeans(keymatrix[, knowledge_n])
+knowledge <- data.frame(name = knowledge_n,freq = knowledge_f)
+knowledge20 <- knowledge[order(-knowledge$freq), ][1:20,]
+knowledge20 <- transform(knowledge20, name = reorder(name, freq))
+
 shinyServer(function(input, output) {
   term2 <- eventReactive(eventExpr = input$refresh,
                valueExpr = {
@@ -74,6 +90,19 @@ shinyServer(function(input, output) {
       ignoreNULL = TRUE)
   output$assocplot <- renderPlot({
     term_assoc_plot(vec1(), term2(), dtm)
+  })
   # define your new plot here
+  output$skillplot <- renderPlot({
+    ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#FF99CC") + 
+      coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
+      theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) +
+      labs(title = "Technology Ranking",x = "Technology",y = "Frequency") + scale_y_continuous(labels = scales::percent)
+  })
+  output$knowledgeplot <- renderPlot({
+    ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#99CCFF") + 
+      coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
+      theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) + 
+      labs(title = "Technique Ranking",x = "Technique",y = "Frequency") + scale_y_continuous(labels = scales::percent)
   })
 })
+theme()
