@@ -8,6 +8,8 @@ https://jpchamps.shinyapps.io/dscube_app/
 - Find a particular job posting you want to apply for but feel worried you won't make the cut? Paste the text of the job posting into our app and we'll suggest relevant books and free online courses to help you brush up on your skills.  
 
 ![screenshot](/figs/dscubefront.PNG)
+![screenshot](/figs/dscubenewsfeed.PNG)
+![screenshot](/figs/dscubejobmarket.PNG)
 ![screenshot](/figs/dscuberecomm.PNG)
 
 This app was created for Dr. Tian Zheng's Applied Data Science class at Columbia University, Spring 2016.  
