@@ -1,5 +1,6 @@
 library(markdown)
 library(shinythemes)
+library(shinydashboard)
 tags$style
 shinyUI(navbarPage(
                   # fluidRow(column(5,img(src="cube.png",width=35)),column(5,offset=5,h2("DSCube"))),
@@ -16,7 +17,7 @@ shinyUI(navbarPage(
                                br()
                                 
                         ),
-                        h3("Potentialialize your Data Science Knowledge and Skills",align="center")
+                        h3("Potentialize your Data Science Knowledge and Skills",align="center")
                       )
                    ),
                    tabPanel("Newsfeed",
@@ -41,6 +42,20 @@ shinyUI(navbarPage(
                           HTML(
                             "<a class='twitter-timeline' href='https://twitter.com/JPChamps/timelines/724288990690553861' data-widget-id='724291283158740992'>Articles</a>
                             <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
+                          )
+                          )
+                        ),
+                      fluidRow(
+                        box(
+                          HTML(
+                            "<a class='twitter-timeline' href='https://twitter.com/JPChamps/timelines/725384916817575936' data-widget-id='725385307462492165'>Tweetstar1</a>
+                              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
+                          ) 
+                          ),
+                        box(
+                          HTML(
+                            "<a class='twitter-timeline' href='https://twitter.com/JPChamps/timelines/725385057519697923' data-widget-id='725385790117793792'>Tweetstar2</a>
+                              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
                           )
                           )
                         )
@@ -177,3 +192,5 @@ shinyUI(navbarPage(
 #                               )
 #                    )
 ))
+
+##

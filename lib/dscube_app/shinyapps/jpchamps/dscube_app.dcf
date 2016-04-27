@@ -1,5 +1,4 @@
 name: dscube_app
 account: jpchamps
-bundleId: 436127
+bundleId: 436184
 url: https://jpchamps.shinyapps.io/dscube_app/
-server: shinyapps.io
