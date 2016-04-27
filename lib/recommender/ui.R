@@ -12,16 +12,12 @@ shinyUI(
     ),
     fluidRow(
       column(8, offset = 2,
-      textOutput("course1"),
       uiOutput("course1url"),
-      textOutput("course2"),
-      textOutput("course2url")
+      uiOutput("course2url")
       ),
       column(8, offset = 2,
-      textOutput("book1"),
-      textOutput("book1url"),
-      textOutput("book2"),
-      textOutput("book2url")
+      uiOutput("book1url"),
+      uiOutput("book2url")
       )
     )
   )
