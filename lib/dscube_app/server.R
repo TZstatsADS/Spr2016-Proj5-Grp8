@@ -7,7 +7,8 @@ library(ggrepel)
 library(R.utils)
 library('scales')
 
-quartz()
+# load("/Users/JPC/Dropbox/TESIS/APP shiny/test_big5/dropdropbox_credentials.Rdata")
+
 #### SECOND TAB
 #_____________________________________________________________________________________________
 
@@ -159,6 +160,11 @@ shinyServer(
     
     # THIRD TAB
     # ________________________________________________________________________________________
+    
+#     rrr()
+#     rrr <- reactive({
+#       dropbox_save(dropbox_credentials, input$comentario, file=paste0("duda",substr(date(),5,11),gsub(":", "", substr(date(),12,19), fixed = TRUE)," ","r",randi))
+#     })
     
     }
     )
