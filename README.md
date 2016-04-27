@@ -4,12 +4,11 @@
 https://jpchamps.shinyapps.io/dscube_app/
 
 - Keep up to date with the latest in data science events and articles, and find out who to follow to learn more, courtesy of Twitter  
-- Wondering which industries want R or which ones want Excel? Wondering what language to concentrate on for machine learning or other skills? Find out from our database of Indeed.com job postings  
+- Wondering which industries want R or which ones want Excel? Wondering what language to concentrate on for machine learning or other skills? Find out from our database of Indeed.com job postings. (Note: This takes a while to load, please be patient.)  
 - Find a particular job posting you want to apply for but feel worried you won't make the cut? Paste the text of the job posting into our app and we'll suggest relevant books and free online courses to help you brush up on your skills.  
 
-<p align = "center">
-<img src = "https://github.com/TZstatsADS/finalproject-p5-team8/tree/master/figs/dscubefront.PNG" />
-</p>
+![screenshot](/figs/dscubefront.PNG)
+![screenshot](/figs/dscuberecomm.PNG)
 
 This app was created for Dr. Tian Zheng's Applied Data Science class at Columbia University, Spring 2016.  
 
