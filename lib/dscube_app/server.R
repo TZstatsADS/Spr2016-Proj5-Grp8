@@ -146,13 +146,13 @@ shinyServer(
     })
     # define your new plot here
     output$skillplot <- renderPlot({
-      ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#ed4212") + 
+      ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#990000") + 
         coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
         theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) +
         labs(title = "Technology Ranking",x = "Technology",y = "Frequency") + scale_y_continuous(labels = scales::percent)
     })
     output$knowledgeplot <- renderPlot({
-      ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#ed4212") + 
+      ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#990000") + 
         coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
         theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) + 
         labs(title = "Technique Ranking",x = "Technique",y = "Frequency") + scale_y_continuous(labels = scales::percent)
