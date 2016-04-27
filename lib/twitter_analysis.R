@@ -155,10 +155,8 @@ tweets.events <- base[index.events,]
 words.events <- words[index.events,]
 extract.period(tweets.events$created,"day")
 
-top.words <- c("python","hadoop","r","minning","big","machine")
+top.words <- c("python","hadoop","sql","minning","scala","hive","machine","optimization","predict","visualization","mining")
 index.top.tweets.events <- apply(words.events,1, function(x) return(ifelse(sum(x %in% top.words)==0,FALSE,TRUE)))
-which(index.top.tweets.events)
-length(index.top.tweets.events)
 tweets.events <- rbind(tweets.events[index.top.tweets.events,],tweets.events[!index.top.tweets.events,])
 head(tweets.events$text)
 
@@ -174,6 +172,13 @@ sum(words[index.articles[1],] %in% c("data","science"))==2
 base$text[index.articles[1]]
 tweets.articles <- base[index.articles,]
 tweets.articles <- tweets.articles[order(tweets.articles$favoriteCount,decreasing = T),]
+dim(tweets.articles)
+tweets.articles.red <- head(tweets.articles,50)
+words.articles <- head(words[index.articles,],50)
+
+index.top.tweets.articles <- apply(words.articles,1, function(x) return(ifelse(sum(x %in% top.words)==0,FALSE,TRUE)))
+tweets.articles.red <- rbind(tweets.articles.red[index.top.tweets.articles,],tweets.articles.red[!index.top.tweets.articles,])
+head(tweets.articles.red$text)
 
 head(tweets.articles$text,10)
 head(base$text[index.articles])

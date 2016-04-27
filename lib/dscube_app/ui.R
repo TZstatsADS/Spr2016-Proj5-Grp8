@@ -1,8 +1,7 @@
 library(markdown)
 library(shinythemes)
 shinyUI(navbarPage(
-                      fluidRow(img(src="cube.png",width=60),h2("DSCube"),column(2)),
-                            
+                  fluidRow(img(src="cube.png",width=60),h2("DSCube"),column(2)),
                    theme=shinytheme("united"),
                    tabPanel("Introduction",
                       fluidPage(center=T,
@@ -18,7 +17,7 @@ shinyUI(navbarPage(
                             "<a class='twitter-timeline' href='https://twitter.com/JPChamps/timelines/724255445637058563' data-widget-id='724281761832808449'>Data Science Events</a>
                             <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
                           ) 
-                          ),
+                        ),
                         box(
                           HTML(
                             "<a class='twitter-timeline' href='https://twitter.com/JPChamps/timelines/724288990690553861' data-widget-id='724291283158740992'>Articles</a>
@@ -33,13 +32,13 @@ shinyUI(navbarPage(
                       fluidRow(
                         box(
                           textInput("events.text",label="", value = ""),
-                          actionButton("show.custom.events","Search"),
-                          uiOutput("custom.events.widget")
+                          actionButton("show.custom.events","Search")
+                          # uiOutput("custom.events.widget")
                         ),
                         box(
                           textInput("articles.text",label="", value = ""),
-                          actionButton("show.custom.articles","Search"),
-                          uiOutput("custom.articles.widget")
+                          actionButton("show.custom.articles","Search")
+                          # uiOutput("custom.articles.widget")
                         )
                       )
 

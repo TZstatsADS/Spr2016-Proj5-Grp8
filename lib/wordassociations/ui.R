@@ -1,6 +1,7 @@
 # UI for Shiny app for word associations - to be merged with full app
 
-shinyUI(fluidPage(
+shinyUI(
+fluidPage(
   titlePanel("Term Correlations in Indeed.com Job Postings"),
   
   fluidRow(
@@ -56,4 +57,5 @@ shinyUI(fluidPage(
            plotOutput("knowledgeplot")
            )
     )
-))
+)
+)

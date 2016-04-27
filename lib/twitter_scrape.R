@@ -262,3 +262,4 @@ while (Sys.time() < end.date){
   #     print("No geo-located tweets found, restart stream")
   #   }
 }
+
