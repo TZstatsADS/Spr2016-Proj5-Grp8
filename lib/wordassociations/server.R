@@ -6,7 +6,8 @@ library(ggrepel)
 library(R.utils)
 library('scales')
 
-dtm <- readRDS("./jp_dtm_sparse.RDS") # document-term matrix
+dtm <- readRDS("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/lib/wordassociations/jp_dtm_sparse.RDS") # document-term matrix
+keymatrix <- read.csv("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/data/keymatrix.csv")
 
 technologies <- c("python", "r", "stata", "spss", "sas", "linux", "sql", "nosql", "postgresql", "android",
                   "ruby", "django", "php", "mysql", "scala", "spark", "hadoop", "mapreduce", "pig",
@@ -60,7 +61,7 @@ term_assoc_plot <- function(vec1, term2, dtm) {
 
 ########################
 #Static Plots
-keymatrix <- read.csv("keymatrix.csv")
+
 skill_n <- c("d3js","r","c","stan","java","stata","linux","sql","python","nosql","postgresql","ruby","scala","perl","shiny","php","html5","tableau","markdown","hadoop","mapreduce","sas","matlab","excel","ppt","spark","julia","aws","mongodb","javascript","hbase","pig","hive","zookeeper","spss","shell")
 skill_f <- colMeans(keymatrix[, skill_n])
 skill <- data.frame(name = skill_n,freq = skill_f)

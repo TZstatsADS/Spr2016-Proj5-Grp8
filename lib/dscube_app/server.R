@@ -7,11 +7,14 @@ library(ggrepel)
 library(R.utils)
 library('scales')
 
+quartz()
 #### SECOND TAB
 #_____________________________________________________________________________________________
 
-dtm <- readRDS("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/lib/wordassociations/jp_dtm_sparse.RDS") # document-term matrix
-keymatrix <- read.csv("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/data/keymatrix.csv")
+# dtm <- readRDS("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/lib/dscube_app/jp_dtm_sparse.RDS") # document-term matrix
+# keymatrix <- read.csv("/Users/JPC/Documents/Columbia/2nd Semester/1. Applied Data Science/2. Homeworks/Project 5/finalproject-p5-team8/lib/dscube_app/keymatrix.csv")
+dtm <- readRDS("jp_dtm_sparse.RDS") # document-term matrix
+keymatrix <- read.csv("keymatrix.csv")
 
 technologies <- c("python", "r", "stata", "spss", "sas", "linux", "sql", "nosql", "postgresql", "android",
                   "ruby", "django", "php", "mysql", "scala", "spark", "hadoop", "mapreduce", "pig",

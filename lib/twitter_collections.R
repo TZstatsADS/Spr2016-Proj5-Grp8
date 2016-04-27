@@ -140,19 +140,6 @@ delete.tweet(tweets.events$id[4],id.col.custevents)
 # delete.tweets(tweets.in.collection(id.col.dsarticles),id.col.dsarticles)
 tweets.in.collection(id.col.dsarticles)
 
-1
-2
-3
-7
-9
-12
-13
-14
-15
-19
-22
-23
-pp[22]
 must.articles <- c("722566794347589632","722111371362594816")
 delete.articles <- c("722890699331346433","724542237430915077","724597255290925056","723967944426921985","722846456265060356","724481351701921792","722359900819570688","724360358941589508","722697270571986944","722757481106046976","722778791286870017")
 index.delete.articles <- which(tweets.articles.red$id %in% delete.articles)
@@ -166,3 +153,4 @@ post.tweets(rev(unique(c(must.articles,final.articles$id))),id.col.dsarticles)
 #___________________________#
 pp[[1]]
 post.tweet("722566794347589632",id.col.custarticles)
+
