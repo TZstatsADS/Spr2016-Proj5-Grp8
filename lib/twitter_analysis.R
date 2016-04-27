@@ -2,8 +2,12 @@
 # install.packages("stringr")
 # install.packages("wordcloud")
 # install.packages("sentiment")
+library(streamR)
+library(twitteR)
 library(wordcloud)
 library(tm)
+library(stringr) # str_split_fixed
+library(httr)  # function GET
 library(Rstem,lib.loc = "/Users/JPC/Documents/R/Packages/Rstem")
 # library(sentiment,lib.loc = "/Users/JPC/Documents/R/Packages")
 
@@ -22,10 +26,12 @@ for (i in names.stream){
 ### Historic
 load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
 load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward2.RData")
+load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward3.RData")
 b1 <- twListToDF(strip_retweets(tweets.f1))
 b2 <- twListToDF(strip_retweets(tweets.f2))
-historic.data <- rbind(test.df.f2,test.df.f1[2:nrow(test.df.f1),])
-historic.data.nort <- rbind(b2,b1[2:nrow(b1),])
+b3 <- twListToDF(strip_retweets(tweets.f3))
+historic.data <- rbind(test.df.f3,test.df.f2[2:nrow(test.df.f2),],test.df.f1[2:nrow(test.df.f1),])
+historic.data.nort <- rbind(b3,b2[2:nrow(b2),],b1[2:nrow(b1),])
 dim(historic.data.nort)
 
 ### CLEAN DATA
@@ -69,6 +75,19 @@ clean_tweets <- function(some_txt){
   names(some_txt) = NULL
   list(txt=some_txt,link.ind=link.ind)
 }
+extract.period <- function(x,period){sapply(x,function(x) substr(x,start = first.last(period)[1],stop = first.last(period)[2]))}
+first.last <- function(period){
+  switch(period,
+         date=c(1,10),
+         day=c(9,10),
+         month=c(6,7),
+         year=c(1,4),
+         time=c(12,9),
+         hour=c(12,13),
+         minutes=c(15,16),
+         seconds=c(18,19)
+  )
+}
 
 base <- historic.data.nort[!is.na(historic.data.nort$text),]
 temp <- clean_tweets(base$text)
@@ -109,7 +128,7 @@ head(all.words.no.rt)
 ### EVENTS
 ###____________________________________________________________________________________________
 
-today <-"2016-04-22" 
+today <-"2016-04-27" 
 # Contain event words
 words.event <-  c("event","events","attend")
 index.events <- which(apply(words,1,function(x) sum(x %in% words.event))!=0)
@@ -123,7 +142,7 @@ index.events <- index.events[tweets.events$link==1]
 tweets.events <- base[index.events,]
 # Delete expired
 index.expired <-index.events[extract.period(tweets.events$created,"date")!=today & apply(words[index.events,],1, function(x) sum(x %in% c("today","tomorrow","tonights")))!=0]
-index.events <-index.events[!extract.period(tweets.events$created,"date")!=today & apply(words[index.events,],1, function(x) sum(x %in% c("today","tomorrow","tonights")))!=0]
+index.events <-index.events[!(extract.period(tweets.events$created,"date")!=today & apply(words[index.events,],1, function(x) sum(x %in% c("today","tomorrow","tonights")))!=0)]
 tweets.events <- base[index.events,]
 # Delete tweets with unwanted words
 words.unwanted <- c("berlin","athens")
@@ -132,8 +151,16 @@ index.events <- index.events[!apply(words[index.events,],1, function(x) sum(x %i
 index.events <- intersect(index.events,which(apply(words,1,function(x) sum(x %in% c("data","science")))==2))
 base[index.events,]$text
 base[index.events[14],]
-tweets.f1[1]
-test.df.f1[1,]
+tweets.events <- base[index.events,]
+words.events <- words[index.events,]
+extract.period(tweets.events$created,"day")
+
+top.words <- c("python","hadoop","r","minning","big","machine")
+index.top.tweets.events <- apply(words.events,1, function(x) return(ifelse(sum(x %in% top.words)==0,FALSE,TRUE)))
+which(index.top.tweets.events)
+length(index.top.tweets.events)
+tweets.events <- rbind(tweets.events[index.top.tweets.events,],tweets.events[!index.top.tweets.events,])
+head(tweets.events$text)
 
 # Show the best, include keywords
 
@@ -151,52 +178,3 @@ tweets.articles <- tweets.articles[order(tweets.articles$favoriteCount,decreasin
 head(tweets.articles$text,10)
 head(base$text[index.articles])
 tweets.articles[2,]
-
-
-
-
-
-
-
-
-
-
-
-
-clean_tweets <- function(text){
-  # loading required packages
-  lapply(c("tm", "Rstem", "stringr"), require, c=T, q=T)
-  # avoid encoding issues by dropping non-unicode characters
-  utf8text <- iconv(text, to='UTF-8-MAC', sub = "byte")
-  # remove punctuation and convert to lower case
-  words <- removePunctuation(utf8text)
-  words <- tolower(words)
-  # spliting in words
-  words <- str_split(words, " ")
-  return(words)
-}
-text <- tw.df$text[1]
-# now we clean the text
-tweets$text[1]
-tweets$text[7]
-
-clean.text <- clean_tweets(tw.df$text[1])
-
-tweets <- text
-
-CleanTweets<-function(tweets)
-{
-  # Remove redundant spaces
-  tweets <- str_replace_all(tweets," "," ")
-  # Get rid of URLs
-  tweets <- str_replace_all(string = tweets,pattern= "http://t.co/[a-z,A-Z,0-9]*{8}",replacement = "")
-  # Take out retweet header, there is only one
-  tweets <- str_replace(tweets,"RT @[a-z,A-Z]*: ","")
-  # Get rid of hashtags
-  tweets <- str_replace_all(tweets,"#[a-z,A-Z]*","")
-  # Get rid of references to other screennames
-  tweets <- str_replace_all(tweets,"@[a-z,A-Z]*","")
-  return(tweets)
-}
-
-CleanTweets(text)
