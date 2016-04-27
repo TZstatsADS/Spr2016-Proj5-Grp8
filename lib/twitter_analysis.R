@@ -194,10 +194,11 @@ tweets.users <- base[index.users,]
 #list.users <- unique(base$screenName[index.users])
 index.duplicated <- duplicated(tweets.users$screenName)
 duplicated.v <- tweets.users$screenName[index.duplicated]
-duplicated.df <- data.frame(name=duplicated.v,duplicates=rep(1,length(duplicated.v),likes=tweets.users$screenName[index.duplicated]))
-n.duplicates <- table(duplicated.v)
-n.duplicates <- ddply(.data = duplicated.df,.variables = "name",duplicates=sum(duplicates))
-n.duplicates <- sort(n.duplicates,decreasing = T)
+likes <- tweets.users$favoriteCount[index.duplicated]
+duplicated.df <- data.frame(name=duplicated.v,duplicates=rep(1,length(duplicated.v)),likes=likes)
+#n.duplicates <- table(duplicated.v)
+n.duplicates <- ddply(.data = duplicated.df,.fun = summarize,.variables = "name",duplicates=sum(duplicates),likes=sum(likes))
+n.duplicates <- n.duplicates[order(n.duplicates$duplicates)]
 index.duplicated <- which(n.duplicates>5)
 
 

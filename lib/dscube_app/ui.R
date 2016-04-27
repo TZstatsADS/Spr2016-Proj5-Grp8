@@ -137,12 +137,18 @@ shinyUI(navbarPage(
                           column(4, offset = 2,
                                  uiOutput("course.title"),
                                  uiOutput("course1url"),
-                                 uiOutput("course2url")
+                                 uiOutput("course2url"),
+                                 uiOutput("course3url"),
+                                 uiOutput("course4url"),
+                                 uiOutput("course5url")
                           ),
                           column(4, offset = 2,
                                  uiOutput("books.title"),
                                  uiOutput("book1url"),
-                                 uiOutput("book2url")
+                                 uiOutput("book2url"),
+                                 uiOutput("book3url"),
+                                 uiOutput("book4url"),
+                                 uiOutput("book5url")
                           )
                         )
                       )
