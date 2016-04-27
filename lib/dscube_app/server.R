@@ -169,17 +169,41 @@ shinyServer(
     course2 <- reactive({
       as.character(recommendation_course(post())$course_name_2)
     })
+    course3 <- reactive({
+      as.character(recommendation_course(post())$course_name_3)
+    })
+    course4 <- reactive({
+      as.character(recommendation_course(post())$course_name_4)
+    })
+    course5 <- reactive({
+      as.character(recommendation_course(post())$course_name_5)
+    })
     book1 <- reactive({
       as.character(recommendation_book(post())$book_name_1)
     })
     book2 <- reactive({
       as.character(recommendation_book(post())$book_name_2)
     })
+    book3 <- reactive({
+      as.character(recommendation_book(post())$book_name_3)
+    })
+    book4 <- reactive({
+      as.character(recommendation_book(post())$book_name_4)
+    })
+    book5 <- reactive({
+      as.character(recommendation_book(post())$book_name_5)
+    })
     
     output$course1url <- renderUI(tags$a(course1(), href = as.character(recommendation_course(post())$course_URL_1)))
     output$course2url <- renderUI(tags$a(course2(), href = as.character(recommendation_course(post())$course_URL_2)))
+    output$course3url <- renderUI(tags$a(course3(), href = as.character(recommendation_course(post())$course_URL_3)))
+    output$course4url <- renderUI(tags$a(course4(), href = as.character(recommendation_course(post())$course_URL_4)))
+    output$course5url <- renderUI(tags$a(course5(), href = as.character(recommendation_course(post())$course_URL_5)))
     output$book1url <- renderUI(tags$a(book1(), href = as.character(recommendation_book(post())$book_URL_1)))
     output$book2url <- renderUI(tags$a(book2(), href = as.character(recommendation_book(post())$book_URL_2)))
+    output$book3url <- renderUI(tags$a(book3(), href = as.character(recommendation_book(post())$book_URL_3)))
+    output$book4url <- renderUI(tags$a(book4(), href = as.character(recommendation_book(post())$book_URL_4)))
+    output$book5url <- renderUI(tags$a(book5(), href = as.character(recommendation_book(post())$book_URL_5)))
     
     output$course.title<-renderUI(dynamic.rec())
     dynamic.rec <- eventReactive(input$process_post,{
