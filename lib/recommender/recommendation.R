@@ -1,5 +1,5 @@
 ###clean the text data
-clean_text <- function(original_text){
+clean_text <- function(some_txt){
   # remove punctuation
   some_txt = gsub("[[:punct:]]", "", some_txt)
   # remove unnecessary spaces
@@ -37,32 +37,35 @@ keywords_vector<-c('d3js','r','c','stan','java',
                    'postgresql','ruby','scala','perl','shiny', 'php','sampling','optimization',
                    'html5','tableau','markdown','hadoop','mapreduce','sas','matlab',
                    'excel','ppt','spark','julia','aws','mongodb','javascript','hbase',
-                   'pig','hive','zookeeper','deep learning','classify','bayes','gis',
-                   'machine learning','survival','multilevel','data mining','linear',
+                   'pig','hive','zookeeper','deep','classify','bayes','gis',
+                   'machine','survival','multilevel','mining','linear',
                    'visualization','predict','analytic','design','nlp','recommend',
                    'supervised','unsupervised','cluster','model','hierarchical','etl',
                    'vision')
+build_matrix<-function(original_text){
 #fill the matrix we want to use
+original_text_cleaned<-clean_text(original_text)
 original_text_cleaned<-unlist(strsplit(original_text_cleaned,' '))
 original_text_cleaned<-gsub("\n", "", original_text_cleaned)
 post<-matrix(0,nrow=1,ncol=length(keywords_vector))
 for(i in 1:length(keywords_vector)){
   post[i]<-sum(keywords_vector[i] %in% original_text_cleaned)
 }
+return(post)
+}
 
 
 
 
 ### build course recommendation system 
-course_matrix<-read.csv('test.csv')
+course_matrix<-read.csv('course_recommend.csv')
 recommendation_course<-function(post){
   
   #matrix preparation
   post_matrix<-matrix(rep(post),nrow=dim(course_matrix)[1],
-                      ncol=dim(course_matrix)[2]-2)
+                      ncol=dim(course_matrix)[2]-2,byrow=TRUE)
   course_matrix_used<-course_matrix[,3:dim(course_matrix)[2]]
   course_matrix_used<-as.matrix(course_matrix_used)
-  course_matrix_used<-as.numeric(course_matrix_used)
   
   #give the first recommendation
   #calculate the matrix after substraction
@@ -84,9 +87,48 @@ recommendation_course<-function(post){
   row_select_2<-which.min(rowSums(comparison_result_2))
   
   #output 
-  result<-list(course_name_1=course_matrix[row_select,1],
-               course_URL_1=course_matrix[row_select,2],
-               course_name_2=course_matrix[row_select_2,1],
-               course_URL_2=course_matrix[row_select_2,2])
+  result<-list(course_name_1=as.character(course_matrix[row_select,1]),
+               course_URL_1=as.character(course_matrix[row_select,2]),
+               course_name_2=as.character(course_matrix[row_select_2,1]),
+               course_URL_2=as.character(course_matrix[row_select_2,2]))
   return(result)
 }
+
+
+### build book recommendation system
+book_matrix<-read.csv('book_recommend.csv')
+recommendation_book<-function(post){
+  
+  #matrix preparation
+  post_matrix<-matrix(rep(post),nrow=dim(book_matrix)[1],
+                      ncol=dim(book_matrix)[2]-2,byrow=TRUE)
+  book_matrix_used<-book_matrix[,3:dim(book_matrix)[2]]
+  book_matrix_used<-as.matrix(book_matrix_used)
+  
+  #give the first recommendation
+  #calculate the matrix after substraction
+  comparison_result<-post_matrix-book_matrix_used
+  #let the negative factors be 0
+  comparison_result[which(comparison_result[]<0)]<-0
+  #select the most closed book
+  row_select<-which.min(rowSums(comparison_result))
+  temp<-comparison_result[row_select,]
+  
+  #give the second recommendation
+  #matrix preparation
+  post_matrix_2<-matrix(rep(temp),
+                        nrow=dim(comparison_result)[1],
+                        ncol=dim(comparison_result)[2])
+  #calculate the matrix after substraction AGAIN
+  comparison_result_2<-post_matrix_2-book_matrix_used
+  comparison_result_2[which(comparison_result_2[]<0)]<-0
+  row_select_2<-which.min(rowSums(comparison_result_2))
+  
+  #output 
+  result<-list(book_name_1=as.character(book_matrix[row_select,1]),
+               book_URL_1=as.character(book_matrix[row_select,2]),
+               book_name_2=as.character(book_matrix[row_select_2,1]),
+               book_URL_2=as.character(book_matrix[row_select_2,2]))
+  return(result)
+}
+
