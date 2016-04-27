@@ -1,16 +1,35 @@
 library(markdown)
 library(shinythemes)
+tags$style
 shinyUI(navbarPage(
-                  fluidRow(img(src="cube.png",width=60),h2("DSCube"),column(2)),
+                  # fluidRow(column(5,img(src="cube.png",width=35)),column(5,offset=5,h2("DSCube"))),
+                  fluidRow("DSCube",img(src="cube.png",width=35),column(10,offset=10,br()),column(10,offset=10,br()),column(10,offset=10,br())),
+
                    theme=shinytheme("united"),
-                   tabPanel("Introduction",
-                      fluidPage(center=T,
-                                h1("show intro"),
-                                HTML("<img src='http://49.media.tumblr.com/3da243faf084c38ec80954cbd750df08/tumblr_nbadm3ODgJ1r2geqjo1_500.gif' alt='cube / octahedron'>"),
-                                HTML("<img class='irc_mi iZ0Ufc0OZdbU-pQOPx8XEepE' alt='' style='margin-top: 45px;' src='http://digitalblock.eu/wpimages/wp4ad06172.gif' width='304' height='304'>")
+                   tabPanel("",
+                      fluidPage(
+                        column(12,offset=4,
+                                h1("Data Science Cube"),
+                                # HTML("<img src='http://49.media.tumblr.com/3da243faf084c38ec80954cbd750df08/tumblr_nbadm3ODgJ1r2geqjo1_500.gif' alt='cube / octahedron'>"),
+                                HTML("<img class='irc_mi iZ0Ufc0OZdbU-pQOPx8XEepE' alt='' style='margin-top: 45px;' src='http://digitalblock.eu/wpimages/wp4ad06172.gif' width='304' height='304'>"),
+                               br(),
+                               br()
+                                
+                        ),
+                        h3("Potentialialize your Data Science Knowledge and Skills",align="center")
                       )
                    ),
                    tabPanel("Newsfeed",
+                      tags$head(
+                        HTML(
+                          "<style>
+                          body {background-color:black;}
+                          h1   {color:lightgrey;}
+                          h3   {color:lightgrey;}
+                          p    {color:green;}
+                          </style>"
+                        )
+                      ),
                       fluidRow(
                         box(
                           HTML(
@@ -24,29 +43,28 @@ shinyUI(navbarPage(
                             <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
                           )
                           )
-                        ),
-                      fluidRow(
-                        column(width=10,offset=.3, h3("Looking for any specific topic? Customize your search!")),
-                        br()
-                      ),
-                      fluidRow(
-                        box(
-                          textInput("events.text",label="", value = ""),
-                          actionButton("show.custom.events","Search")
-                          # uiOutput("custom.events.widget")
-                        ),
-                        box(
-                          textInput("articles.text",label="", value = ""),
-                          actionButton("show.custom.articles","Search")
-                          # uiOutput("custom.articles.widget")
                         )
-                      )
+#                       fluidRow(
+#                         column(width=10,offset=.3, h3("Looking for any specific topic? Customize your search!")),
+#                         br()
+#                       ),
+#                       fluidRow(
+#                         box(
+#                           textInput("events.text",label="", value = ""),
+#                           actionButton("show.custom.events","Search")
+#                           # uiOutput("custom.events.widget")
+#                         ),
+#                         box(
+#                           textInput("articles.text",label="", value = ""),
+#                           actionButton("show.custom.articles","Search")
+#                           # uiOutput("custom.articles.widget")
+#                         )
+#                       )
 
                    ),
                    tabPanel("Job Market",
                       fluidPage(
-                        titlePanel("Term Correlations in Indeed.com Job Postings"),
-                        
+                        fluidRow(h1("Term Correlations in Indeed.com Job Postings",align="center"),br()),
                         fluidRow(
                           column(width=10,offset=0.3,
                                  sidebarLayout(
@@ -102,29 +120,30 @@ shinyUI(navbarPage(
                         )
                       )
                    ),
-                   tabPanel("Interview training",
+                   tabPanel("Prepare for your interview",
                             fluidPage()
-                   ),
-                   navbarMenu("More",
-                              tabPanel("Table",
-                                       DT::dataTableOutput("table")
-                              ),
-                              tabPanel("About",
-                                       fluidRow(
-                                         column(3,
-                                                img(class="img-polaroid",
-                                                    src=paste0("http://upload.wikimedia.org/",
-                                                               "wikipedia/commons/9/92/",
-                                                               "1919_Ford_Model_T_Highboy_Coupe.jpg")),
-                                                tags$small(
-                                                  "Source: Photographed at the Bay State Antique ",
-                                                  "Automobile Club's July 10, 2005 show at the ",
-                                                  "Endicott Estate in Dedham, MA by ",
-                                                  a(href="http://commons.wikimedia.org/wiki/User:Sfoskett",
-                                                    "User:Sfoskett")
-                                                )
-                                         )
-                                       )
-                              )
                    )
+
+#                    navbarMenu("More",
+#                               tabPanel("Table",
+#                                        DT::dataTableOutput("table")
+#                               ),
+#                               tabPanel("About",
+#                                        fluidRow(
+#                                          column(3,
+#                                                 img(class="img-polaroid",
+#                                                     src=paste0("http://upload.wikimedia.org/",
+#                                                                "wikipedia/commons/9/92/",
+#                                                                "1919_Ford_Model_T_Highboy_Coupe.jpg")),
+#                                                 tags$small(
+#                                                   "Source: Photographed at the Bay State Antique ",
+#                                                   "Automobile Club's July 10, 2005 show at the ",
+#                                                   "Endicott Estate in Dedham, MA by ",
+#                                                   a(href="http://commons.wikimedia.org/wiki/User:Sfoskett",
+#                                                     "User:Sfoskett")
+#                                                 )
+#                                          )
+#                                        )
+#                               )
+#                    )
 ))
