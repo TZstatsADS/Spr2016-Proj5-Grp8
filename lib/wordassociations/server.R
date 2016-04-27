@@ -1,0 +1,108 @@
+# Server for Shiny app for word associations - to be merged with full app
+
+library(tm)
+library(ggplot2)
+library(ggrepel)
+library(R.utils)
+library('scales')
+
+dtm <- readRDS("./jp_dtm_sparse.RDS") # document-term matrix
+
+technologies <- c("python", "r", "stata", "spss", "sas", "linux", "sql", "nosql", "postgresql", "android",
+                  "ruby", "django", "php", "mysql", "scala", "spark", "hadoop", "mapreduce", "pig",
+                  "java", "angularjs", "kafka", "hive", "aws", "mongodb", "perl", "c",
+                  "html", "javascript", "css", "nodejs", "tableau", "excel", "powerpoint",
+                  "aws", "cassandra", "hbase", "ios")
+
+techniques <- c("optimization", "forecasting", "predictive", "machine", "analytics", "mining",
+                "clustering", "classification", "survey", "regression", "bayesian", "modeling",
+                "hypothesis", "algorithms", "visualization", "deep", "mapping", "recognition",
+                "retrieval", "algebra", "nlp", "language", "unstructured", "etl")
+
+industries <- c("startup", "consulting", "finance", "retail", "marketing", "engineering", "logistics", "hospitality",
+                "transportation", "telecommunications", "sales", "banking", "media", "research", "academic", "oil", "construction",
+                "sports", "genomics", "healthcare", "medicine", "pharmaceutical", "biotech")
+
+term_assoc <- function(term1, term2, dtm) {
+  if (!term1 %in% dtm$dimnames[2][[1]] | !term2 %in% dtm$dimnames[2][[1]]) {
+    return(0)
+  }
+  if (term1 == term2) {
+    return(1)
+  }
+  result <- findAssocs(dtm, term1, corlimit = 0)[[1]][term2]
+  if (is.na(result)) {
+    return(0)
+  }
+  else return(result)
+}
+
+term_assoc_plot <- function(vec1, term2, dtm) {
+  if ("python" %in% vec1) {category_name <- "technologies"}
+  else if ("optimization" %in% vec1) {category_name <- "techniques"}
+  else if ("startup" %in% vec1) {category_name <- "industries"}
+  points <- sort(sapply(vec1, FUN = term_assoc, term2 = term2, dtm = dtm), decreasing = TRUE)
+  point_names <- gsub(paste("[.]", term2, sep = ""), "", names(points))
+  points <- data.frame(points)
+  points$index <- c(1:nrow(points))
+  points$labels <- point_names
+  points_plot <- ggplot(points, aes(x = index, y = points)) + 
+    geom_point(size = 3) + 
+    geom_label_repel(aes(label = labels)) +
+    xlab(capitalize(category_name)) +
+    ylab("Correlation") +
+    ggtitle(paste("How often various", category_name, 
+                  "are in the same job posting as", term2)) +
+    theme_classic() +
+    theme(panel.background = element_rect(fill = "#cdcfff"))
+  return(points_plot)
+}
+
+########################
+#Static Plots
+keymatrix <- read.csv("keymatrix.csv")
+skill_n <- c("d3js","r","c","stan","java","stata","linux","sql","python","nosql","postgresql","ruby","scala","perl","shiny","php","html5","tableau","markdown","hadoop","mapreduce","sas","matlab","excel","ppt","spark","julia","aws","mongodb","javascript","hbase","pig","hive","zookeeper","spss","shell")
+skill_f <- colMeans(keymatrix[, skill_n])
+skill <- data.frame(name = skill_n,freq = skill_f)
+skill20 <- skill[order(-skill$freq), ][1:20,]
+skill20 <- transform(skill20, name = reorder(name, freq))
+
+knowledge_n <- c("dashboard","regression","dimension","forecast","algorithm","nonparametric","unsupervised","cluster","model","hierarchical","machine.learning","survival","multilevel","data.mining","linear","visualization","predict","analytic","design","sampling","optimization","deep.learning","classify","bayes","recommend","supervised","vision","gis","nlp","etl")
+knowledge_f <- colMeans(keymatrix[, knowledge_n])
+knowledge <- data.frame(name = knowledge_n,freq = knowledge_f)
+knowledge20 <- knowledge[order(-knowledge$freq), ][1:20,]
+knowledge20 <- transform(knowledge20, name = reorder(name, freq))
+
+shinyServer(function(input, output) {
+  term2 <- eventReactive(eventExpr = input$refresh,
+               valueExpr = {
+      switch(input$category2,
+             "technologies" = input$term2technologies,
+             "techniques" = input$term2techniques,
+             "industries" = input$term2industries)},
+      ignoreNULL = TRUE)
+  vec1 <- eventReactive(eventExpr = input$refresh,
+               valueExpr = {
+      switch(input$category1,
+             "technologies" = technologies,
+             "techniques" = techniques,
+             "industries" = industries)},
+      ignoreNULL = TRUE)
+  output$assocplot <- renderPlot({
+    term_assoc_plot(vec1(), term2(), dtm)
+  })
+  # define your new plot here
+  output$skillplot <- renderPlot({
+    ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#FF99CC") + 
+      coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
+      theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) +
+      labs(title = "Technology Ranking",x = "Technology",y = "Frequency") + scale_y_continuous(labels = scales::percent)
+  })
+  output$knowledgeplot <- renderPlot({
+    ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#99CCFF") + 
+      coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
+      theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) + 
+      labs(title = "Technique Ranking",x = "Technique",y = "Frequency") + scale_y_continuous(labels = scales::percent)
+  })
+})
+theme()

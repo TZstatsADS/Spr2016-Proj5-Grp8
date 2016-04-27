@@ -14,7 +14,7 @@ cols = ['X','title','company','location','days_ago','clean_text']
         
 
 doc = {}
-with open('combined.csv',encoding="utf-8",errors="surrogateescape") as csvinput:
+with open('combined_new.csv',encoding="utf-8",errors="surrogateescape") as csvinput:
     with open('clean_text.csv',"w",encoding="utf-8",errors="surrogateescape") as csvoutput:
         writer = csv.DictWriter(csvoutput, fieldnames=cols,extrasaction='ignore',lineterminator='\n')
         reader = csv.DictReader(csvinput) # read rows into a dictionary format
