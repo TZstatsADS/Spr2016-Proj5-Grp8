@@ -2,6 +2,7 @@
 # install.packages("stringr")
 # install.packages("wordcloud")
 # install.packages("sentiment")
+library(plyr)
 library(streamR)
 library(twitteR)
 library(wordcloud)
@@ -183,3 +184,20 @@ head(tweets.articles.red$text)
 head(tweets.articles$text,10)
 head(base$text[index.articles])
 tweets.articles[2,]
+
+### USERS
+###____________________________________________________________________________________________
+
+index.users <- 1:nrow(base)
+index.users <- intersect(index.users,which(apply(words,1,function(x) sum(x %in% c("data","science")))==2))
+tweets.users <- base[index.users,]
+#list.users <- unique(base$screenName[index.users])
+index.duplicated <- duplicated(tweets.users$screenName)
+duplicated.v <- tweets.users$screenName[index.duplicated]
+duplicated.df <- data.frame(name=duplicated.v,duplicates=rep(1,length(duplicated.v),likes=tweets.users$screenName[index.duplicated]))
+n.duplicates <- table(duplicated.v)
+n.duplicates <- ddply(.data = duplicated.df,.variables = "name",duplicates=sum(duplicates))
+n.duplicates <- sort(n.duplicates,decreasing = T)
+index.duplicated <- which(n.duplicates>5)
+
+

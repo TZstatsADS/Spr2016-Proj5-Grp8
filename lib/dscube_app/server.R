@@ -7,6 +7,7 @@ library(ggrepel)
 library(R.utils)
 library('scales')
 
+source("recommendation.R")
 # load("/Users/JPC/Dropbox/TESIS/APP shiny/test_big5/dropdropbox_credentials.Rdata")
 
 #### SECOND TAB
@@ -62,8 +63,7 @@ term_assoc_plot <- function(vec1, term2, dtm) {
     ylab("Correlation") +
     ggtitle(paste("How often various", category_name, 
                   "are in the same job posting as", term2)) +
-    theme_classic() +
-    theme(panel.background = element_rect(fill = "#cdcfff"))
+    theme_classic()
   return(points_plot)
 }
 
@@ -146,13 +146,13 @@ shinyServer(
     })
     # define your new plot here
     output$skillplot <- renderPlot({
-      ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#FF99CC") + 
+      ggplot(skill20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#ed4212") + 
         coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
         theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) +
         labs(title = "Technology Ranking",x = "Technology",y = "Frequency") + scale_y_continuous(labels = scales::percent)
     })
     output$knowledgeplot <- renderPlot({
-      ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#99CCFF") + 
+      ggplot(knowledge20, aes(x = name, y = freq)) + geom_bar(stat = "identity", fill = "#ed4212") + 
         coord_flip() + geom_text(aes(label = percent(freq)), hjust = -0.05, size = 3.5) + 
         theme(text = element_text(size=15), plot.title = element_text(size = rel(2),vjust = 2)) + 
         labs(title = "Technique Ranking",x = "Technique",y = "Frequency") + scale_y_continuous(labels = scales::percent)
@@ -161,6 +161,34 @@ shinyServer(
     # THIRD TAB
     # ________________________________________________________________________________________
     
+    post <- eventReactive(eventExpr = input$process_post,
+                          valueExpr = {build_matrix(input$original_text)})
+    course1 <- reactive({
+      as.character(recommendation_course(post())$course_name_1)
+    })
+    course2 <- reactive({
+      as.character(recommendation_course(post())$course_name_2)
+    })
+    book1 <- reactive({
+      as.character(recommendation_book(post())$book_name_1)
+    })
+    book2 <- reactive({
+      as.character(recommendation_book(post())$book_name_2)
+    })
+    
+    output$course1url <- renderUI(tags$a(course1(), href = as.character(recommendation_course(post())$course_URL_1)))
+    output$course2url <- renderUI(tags$a(course2(), href = as.character(recommendation_course(post())$course_URL_2)))
+    output$book1url <- renderUI(tags$a(book1(), href = as.character(recommendation_book(post())$book_URL_1)))
+    output$book2url <- renderUI(tags$a(book2(), href = as.character(recommendation_book(post())$book_URL_2)))
+    
+    output$course.title<-renderUI(dynamic.rec())
+    dynamic.rec <- eventReactive(input$process_post,{
+      h3("Courses")
+    })
+    output$books.title<-renderUI(dynamic.rec2())
+    dynamic.rec2 <- eventReactive(input$process_post,{
+      h3("Books")
+    })
 #     rrr()
 #     rrr <- reactive({
 #       dropbox_save(dropbox_credentials, input$comentario, file=paste0("duda",substr(date(),5,11),gsub(":", "", substr(date(),12,19), fixed = TRUE)," ","r",randi))
