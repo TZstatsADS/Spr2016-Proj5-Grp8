@@ -18,6 +18,7 @@ setwd("/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Ho
 load("/Users/JPC/Documents/R/twitter API/twitCred.RData")
 load("/Users/JPC/Documents/R/twitter API/token.RData")
 load("/Users/JPC/Documents/R/twitter API/twitCredentials.RData")
+setup_twitter_oauth(api_key,api_secret,access_token,access_token_secret)
 
 ### UNDERSTANDING SEARCH API
 ###____________________________________________________________________________________________
@@ -112,19 +113,19 @@ test.df[1,]$favorited
 day.hour.created <- test.df$created[1]
 day.created <- substr(x,start = 1,stop = 10)
 
-substract.day <- function(x){substr(x,start = 9,stop = 10)}
-substract.month <- function(x){substr(x,start = 6,stop = 7)}
-substract.year <- function(x){substr(x,start = 1,stop = 4)}
-substract.time <- function(x){substr(x,start = 12,stop = 19)}
-substract.hour <- function(x){substr(x,start = 12,stop = 13)}
-substract.minutes <- function(x){substr(x,start = 15,stop = 16)}
-substract.seconds <- function(x){substr(x,start = 18,stop = 19)}
-day.v <- sapply(test.df$created,substract.day)
-month.v <- sapply(test.df$created,substract.month)
-year.v <- sapply(test.df$created,substract.year)
-hour.v <- sapply(test.df$created,substract.hour)
-minutes.v <- sapply(test.df$created,substract.minutes)
-seconds.v <- sapply(test.df$created,substract.seconds)
+extract.day <- function(x){substr(x,start = 9,stop = 10)}
+extract.month <- function(x){substr(x,start = 6,stop = 7)}
+extract.year <- function(x){substr(x,start = 1,stop = 4)}
+extract.time <- function(x){substr(x,start = 12,stop = 19)}
+extract.hour <- function(x){substr(x,start = 12,stop = 13)}
+extract.minutes <- function(x){substr(x,start = 15,stop = 16)}
+extract.seconds <- function(x){substr(x,start = 18,stop = 19)}
+day.v <- sapply(test.df$created,extract.day)
+month.v <- sapply(test.df$created,extract.month)
+year.v <- sapply(test.df$created,extract.year)
+hour.v <- sapply(test.df$created,extract.hour)
+minutes.v <- sapply(test.df$created,extract.minutes)
+seconds.v <- sapply(test.df$created,extract.seconds)
 
 first.last <- function(period){
   switch(period,
@@ -138,10 +139,11 @@ first.last <- function(period){
          seconds=c(18,19)
   )
 }
-substract.period <- function(x,period){sapply(x,function(x) substr(x,start = first.last(period)[1],stop = first.last(period)[2]))}
+extract.period <- function(x,period){sapply(x,function(x) substr(x,start = first.last(period)[1],stop = first.last(period)[2]))}
 
 
 
+table(year.v)
 table(year.v)
 table(month.v)
 table(day.v)
@@ -170,7 +172,7 @@ test2.df$created
 
 getCurRateLimitInfo()
 
-### RETRIEVING HISTORY
+### RETRIEVING PAST TWEETS WITH SEARCH
 ###____________________________________________________________________________________________
 max.id <- test.df$id[nrow(test.df)]
 tweets.h2 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17800,maxID =max.id )
@@ -183,17 +185,26 @@ tweets.f1 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=
 test.df.f1 <- twListToDF(tweets.f1)
 # save(tweets.f1,test.df.f1,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
 tail(test.df.h3)
-test.df.h3$id[1]
 
-load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
+
+# load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward1.RData")
 
 min.id <- test.df.f1$id[1]
-tweets.f1 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17800,sinceID = min.id)
-test.df.f1 <- twListToDF(tweets.f1)
+tweets.f2 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17900,sinceID = min.id)
+test.df.f2 <- twListToDF(tweets.f2)
+# save(tweets.f2,test.df.f2,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward2.RData")
 
-ppp <- substract.period(x = test.df.f1$created,"day")
+# load(file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward2.RData")
+
+min.id <- test.df.f2$id[1]
+tweets.f3 <- searchTwitter("'data science' OR #datascience OR 'Data Science'",n=17900,sinceID = min.id)
+test.df.f3 <- twListToDF(tweets.f3)
+# save(tweets.f3,test.df.f3,file="/Users/JPC/Documents/Columbia/2nd Semester//1. Applied Data Science/2. Homeworks/Project 5/historic_tweets/forward3.RData")
+
+
+ppp <- extract.period(x = test.df.f1$created,"day")
 table(ppp)
-getCurRateLimitInfo()
+
 
 
 getCurRateLimitInfo()
@@ -204,7 +215,7 @@ getCurRateLimitInfo()
 
 # tw.df <- data.frame()
 
-total.min <- 60
+total.min <- 60*7
 alive.min <- 10
 Sys.time()
 end.date <- Sys.time()+60*total.min
