@@ -1,6 +1,6 @@
 # Library folder
 
-The shiny app has three main components each displayed on a different tab: *Newsfeed*, *Job Market* and *Prepare for your interview*. They were constructed based on different R and Python codes as described below.
+The shiny app has three main components each displayed on a different tab: *Newsfeed*, *Job Market* and *Prepare for your interview*. It is located in the *dscube_app* folder; the *recommender* and *wordassociation* folders are preliminary apps that were used to build the *dscube_app*. This prototype was constructed based on different R and Python codes as described below.
 
 ### Newsfeed 
 This tab provides the most recent and relevant information related to Data Science, based on tweets. It was born from the necessity of keeping up to date with the evolving methods and topics in Data Science. The most relevant information is summarised in this tab into 3 categories: *Events*, *Articles*, and *Tweetstars*. The following codes are used to create this tab: 
