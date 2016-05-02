@@ -12,7 +12,7 @@ https://jpchamps.shinyapps.io/dscube_app/
 ![screenshot](/figs/dscubejobmarket.PNG)
 ![screenshot](/figs/dscuberecomm.PNG)
 
-This app is a prototipe that was created for Dr. Tian Zheng's Applied Data Science class at Columbia University, Spring 2016. For detail about how the app was created, please refer to the Readme.md file in the lib folder.  
+This app is a prototype that was created for Dr. Tian Zheng's Applied Data Science class at Columbia University, Spring 2016. For detail about how the app was created, please refer to the Readme.md file in the lib folder.  
 
 Group Members: Ding Tianhong, Gu Xinghao, Juan Pablo Campos Gutierrez, Arnold Lau, Zhou Yi
 
