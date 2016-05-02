@@ -1,3 +1,5 @@
 # Output folder
 
-Put the output of functions and scripts here. This includes cleaned datasets.
+Test our prototype app:
+
+https://jpchamps.shinyapps.io/dscube_app/
